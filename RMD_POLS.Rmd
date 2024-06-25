@@ -1,0 +1,1167 @@
+---
+title: "Chapter2_Stats"
+author: "Oceane Da Cunha"
+date: "2024-02-21"
+output: html_document
+---
+```{r}
+#Loading packages
+library(dplyr)
+library(ggplot2)
+library(adehabitatHR)
+library(rgeos)
+library(rgdal)
+library(rptR)
+library(lme4)
+library(lmerTest)
+library(ggpubr)
+library(move)
+library(plyr)
+```
+
+```{r}
+#Calculating the home range of each snakes
+
+#Loading the spatial data 
+atrox <- read.csv("SpatialData_CA52-72_20MAY24_Cor.csv", header = TRUE, stringsAsFactors = FALSE)
+
+#Isolating ID and coordinates
+atrox.c <- atrox[, c("Individual_ID", "Location_EN", "Location_N")] 
+
+#Setting up Spatial point dataframe
+coordinates(atrox.c) <- c("Location_EN", "Location_N")
+
+#Setting the coordinate reference system (CRS): my GPS use wgs84
+proj4string(atrox.c) <- CRS( "+init=epsg:4326 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+
+#Converting into UTM format
+atrox.UTM <- spTransform(atrox.c, CRS("+proj=utm +zone=13 ellps=WGS84"))
+
+##################################################################################################################
+
+#Calculating MCP with adehabitatR
+
+atrox.mcp <- mcp(atrox.UTM, percent = 95, unout = c("ha"))
+MCPdf <- data.frame(atrox.mcp)  
+
+#Exporting shapefiles
+writeOGR(atrox.UTM, dsn = '.', layer = 'UTM', driver = "ESRI Shapefile")
+rgeos::createSPComment(atrox.mcp)
+writeOGR(atrox.mcp, dsn = '.', layer = 'MCP', driver = "ESRI Shapefile")
+
+##################################################################################################################
+
+#Calculating Kernel 95% with adehabitatR
+
+#Setting the kernels with reference bandwidth
+kernel.ref <- kernelUD(atrox.UTM, h = "href")
+
+#Calculating the 95% kernel
+atrox.kernel.poly <- getverticeshr(kernel.ref, 95, unin ="m", unout = "ha")
+Kernel95df <- data.frame(atrox.kernel.poly)
+
+#Exporting shapefiles
+writeOGR(atrox.kernel.poly, dsn = '.', layer = '95Kernel', driver = "ESRI Shapefile")
+
+##################################################################################################################
+
+#Calculating Kernel 50% with adehabitatR
+
+#Calculating the 95% kernel
+atrox.kernel.poly50 <- getverticeshr(kernel.ref, 50, unin ="m", unout = "ha")
+Kernel50df <- data.frame(atrox.kernel.poly50)
+
+#Exporting shapefiles
+writeOGR(atrox.kernel.poly50, dsn = '.', layer = '50Kernel', driver = "ESRI Shapefile")
+```
+
+```{r}
+#Calculating home ranges per seasons: Non-breeding
+
+#Loading the spatial data 
+atrox <- read.csv("SpatialData_CA52-72_20MAY24_Cor.csv", header = TRUE, stringsAsFactors = FALSE)
+atroxNB <- subset(atrox, Season == "NonBreed")
+
+#Isolating ID and coordinates
+atrox.cNB <- atroxNB[, c("Individual_ID", "Location_EN", "Location_N")] 
+
+#Setting up Spatial point dataframe
+coordinates(atrox.cNB) <- c("Location_EN", "Location_N")
+
+#Setting the coordinate reference system (CRS): my GPS use wgs84
+proj4string(atrox.cNB) <- CRS( "+init=epsg:4326 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+
+#Converting into UTM format
+atrox.UTMNB <- spTransform(atrox.cNB, CRS("+proj=utm +zone=13 ellps=WGS84"))
+
+##################################################################################################################
+
+#Calculating MCP with adehabitatR for non breeding season
+
+atrox.mcpNB <- mcp(atrox.UTMNB, percent = 95, unout = c("ha"))
+MCPdfNB <- data.frame(atrox.mcpNB)
+MCPdfNB
+
+##################################################################################################################
+
+#Calculating Kernel 95% with adehabitatR for non-breeding season
+
+#Setting the kernels with reference bandwidth
+x <- seq(-5000, 5000, by=1) # resolution is the pixel size you desire 
+y <- seq(-5000, 5000, by=1)
+xy <- expand.grid(x=x,y=y)
+coordinates(xy) <- ~x+y
+gridded(xy) <- TRUE
+class(xy)
+
+kernel.refNB <- kernelUD(atrox.UTMNB, h = "href", extent = 4)
+
+#Calculating the 95% kernel
+
+atrox.kernel.polyNB <- getverticeshr(kernel.refNB, 95, unin ="m", unout = "ha")
+Kernel95dfNB <- data.frame(atrox.kernel.polyNB)
+Kernel95dfNB
+
+##################################################################################################################
+
+#Calculating Kernel 50% with adehabitatR: Non breeding
+
+#Calculating the 95% kernel
+atrox.kernel.poly50NB <- getverticeshr(kernel.refNB, 50, unin ="m", unout = "ha")
+Kernel50dfNB <- data.frame(atrox.kernel.poly50NB)
+Kernel50dfNB
+```
+
+```{r}
+#Calculating home ranges per seasons: Breeding
+
+#Loading the spatial data 
+atrox <- read.csv("SpatialData_CA52-72_20MAY24_Cor.csv", header = TRUE, stringsAsFactors = FALSE)
+atroxB <- subset(atrox, Season == "Breed")
+
+#Isolating ID and coordinates
+atrox.cB <- atroxB[, c("Individual_ID", "Location_EN", "Location_N")] 
+
+#Setting up Spatial point dataframe
+coordinates(atrox.cB) <- c("Location_EN", "Location_N")
+
+#Setting the coordinate reference system (CRS): my GPS use wgs84
+proj4string(atrox.cB) <- CRS( "+init=epsg:4326 +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs +towgs84=0,0,0")
+
+#Converting into UTM format
+atrox.UTMB <- spTransform(atrox.cB, CRS("+proj=utm +zone=13 ellps=WGS84"))
+
+##################################################################################################################
+
+#Calculating MCP with adehabitatR for breeding season
+
+atrox.mcpB <- mcp(atrox.UTMB, percent = 95, unout = c("ha"))
+MCPdfB <- data.frame(atrox.mcpB)
+MCPdfB
+
+##################################################################################################################
+
+#Calculating Kernel 95% with adehabitatR for breeding season
+
+#Setting the kernels with reference bandwidth
+
+kernel.refB <- kernelUD(atrox.UTMB, h = "href")
+
+#Calculating the 95% kernel
+
+atrox.kernel.polyB <- getverticeshr(kernel.refB, 95, unin ="m", unout = "ha")
+Kernel95dfB <- data.frame(atrox.kernel.polyB)
+Kernel95dfB
+
+##################################################################################################################
+
+#Calculating Kernel 50% with adehabitatR: Non breeding
+
+#Calculating the 95% kernel
+atrox.kernel.poly50B <- getverticeshr(kernel.refB, 50, unin ="m", unout = "ha")
+Kernel50dfB <- data.frame(atrox.kernel.poly50B)
+Kernel50dfB
+```
+
+
+
+```{r}
+#Calculating movement metrics using the move package
+
+#Loading the data
+atroxM <- read.csv("SpatialData_CA52-72_20MAY24_move.csv", header = TRUE, stringsAsFactors = FALSE)
+
+
+##################################################################################################################
+#Isolating each individuals
+CA52 <- subset(atroxM, atroxM$Individual_ID == "CA52")
+CA53 <- subset(atroxM, atroxM$Individual_ID == "CA53")
+CA54 <- subset(atroxM, atroxM$Individual_ID == "CA54")
+CA56 <- subset(atroxM, atroxM$Individual_ID == "CA56")
+CA57 <- subset(atroxM, atroxM$Individual_ID == "CA57")
+CA58 <- subset(atroxM, atroxM$Individual_ID == "CA58")
+CA59 <- subset(atroxM, atroxM$Individual_ID == "CA59")
+CA62 <- subset(atroxM, atroxM$Individual_ID == "CA62")
+CA65 <- subset(atroxM, atroxM$Individual_ID == "CA65")
+CA66 <- subset(atroxM, atroxM$Individual_ID == "CA66")
+CA68 <- subset(atroxM, atroxM$Individual_ID == "CA68")
+CA70 <- subset(atroxM, atroxM$Individual_ID == "CA70")
+CA71 <- subset(atroxM, atroxM$Individual_ID == "CA71")
+CA72 <- subset(atroxM, atroxM$Individual_ID == "CA72")
+
+##################################################################################################################
+#Creating move object for each individuals
+
+move.CA52 <- move(x=CA52$Location_EN, y=CA52$Location_N, 
+              time=as.POSIXct(CA52$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA52, animal=CA52$Individual_ID)
+
+move.CA53 <- move(x=CA53$Location_EN, y=CA53$Location_N, 
+              time=as.POSIXct(CA53$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA53, animal=CA53$Individual_ID)
+
+move.CA54 <- move(x=CA54$Location_EN, y=CA54$Location_N, 
+              time=as.POSIXct(CA54$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA54, animal=CA54$Individual_ID)
+
+move.CA56 <- move(x=CA56$Location_EN, y=CA56$Location_N, 
+              time=as.POSIXct(CA56$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA56, animal=CA56$Individual_ID)
+
+move.CA57 <- move(x=CA57$Location_EN, y=CA57$Location_N, 
+              time=as.POSIXct(CA57$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA57, animal=CA57$Individual_ID)
+
+move.CA58 <- move(x=CA58$Location_EN, y=CA58$Location_N, 
+              time=as.POSIXct(CA58$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA58, animal=CA58$Individual_ID)
+
+move.CA59 <- move(x=CA59$Location_EN, y=CA59$Location_N, 
+              time=as.POSIXct(CA59$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA59, animal=CA59$Individual_ID)
+
+move.CA62 <- move(x=CA62$Location_EN, y=CA62$Location_N, 
+              time=as.POSIXct(CA62$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA62, animal=CA62$Individual_ID)
+
+move.CA65 <- move(x=CA65$Location_EN, y=CA65$Location_N, 
+              time=as.POSIXct(CA65$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA65, animal=CA65$Individual_ID)
+
+move.CA66 <- move(x=CA66$Location_EN, y=CA66$Location_N, 
+              time=as.POSIXct(CA66$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA66, animal=CA66$Individual_ID)
+
+move.CA68 <- move(x=CA68$Location_EN, y=CA68$Location_N, 
+              time=as.POSIXct(CA68$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA68, animal=CA68$Individual_ID)
+
+move.CA70 <- move(x=CA70$Location_EN, y=CA70$Location_N, 
+              time=as.POSIXct(CA70$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA70, animal=CA70$Individual_ID)
+
+move.CA71 <- move(x=CA71$Location_EN, y=CA71$Location_N, 
+              time=as.POSIXct(CA71$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA71, animal=CA71$Individual_ID)
+
+move.CA72 <- move(x=CA72$Location_EN, y=CA72$Location_N, 
+              time=as.POSIXct(CA72$timestamp, format="%m/%d/%Y %H:%M", tz="UTC"), 
+              proj=CRS("+proj=longlat +ellps=WGS84 +datum=WGS84"), 
+              data=CA72, animal=CA72$Individual_ID)
+
+##################################################################################################################
+
+#Stacking each move objects together
+atroxStack <- moveStack(list(move.CA52, move.CA53, move.CA54, move.CA56, move.CA57, move.CA58, move.CA59,       
+                             move.CA62, move.CA65, move.CA66, move.CA68, move.CA70, move.CA71, move.CA72),
+                        forceTz="UTC")
+
+
+##################################################################################################################
+
+# Calculating the distance between locations: distance is in meters
+dist <- distance(atroxStack)
+
+#Saving list as dataframe
+Distdf <- ldply (dist, data.frame)
+write.csv(Distdf,"C:/Users/ocean/OneDrive - University of Texas at El Paso/Desktop/El Paso PhD/C_atrox_PROJECT/Experiment/Ch2_Personality and SE/Data\\Distdf.csv", row.names=FALSE)
+
+##################################################################################################################
+
+#Calculating the speed between points: speed is in m/s
+
+speed <- speed(atroxStack)
+speed
+
+#Saving list as dataframe
+Speeddf <- ldply (speed, data.frame)
+write.csv(Speeddf,"C:/Users/ocean/OneDrive - University of Texas at El Paso/Desktop/El Paso PhD/C_atrox_PROJECT/Experiment/Ch2_Personality and SE/Data\\SpeeddfB.csv", row.names=FALSE)
+
+##################################################################################################################
+
+#Calculating the average speed for each individual: speed is in m/s
+speed <- read.csv("Speeddf.csv")
+
+#For the non-breeding season
+speedNB <- subset(speed, Season == "NonBreed")
+
+speedNB %>%
+  group_by(ID) %>%
+  summarise_at(vars(Speed), funs(mean(., na.rm=TRUE)))
+
+#For the breeding season
+speedB <- subset(speed, Season == "Breed")
+
+speedB %>%
+  group_by(ID) %>%
+  summarise_at(vars(Speed), funs(mean(., na.rm=TRUE)))
+
+##################################################################################################################
+#Calculating total distance travelled per seasons
+
+dist <- read.csv("Distdf.csv")
+
+#For the non-breeding season
+distNB <- subset(dist, Season == "NonBreed")
+
+distNB %>%
+  group_by(ID) %>%
+  summarise_at(vars(Distance.between.points), funs(sum(., na.rm=TRUE)))
+
+#For the breeding season
+distB <- subset(dist, Season == "Breed")
+
+distB %>%
+  group_by(ID) %>%
+  summarise_at(vars(Distance.between.points), funs(sum(., na.rm=TRUE)))
+
+
+```
+
+```{r}
+#################################################################################################################
+#Calculating the proportion of time spent active (= at the surface)
+
+atrox <- read.csv("SpatialData_CA52-72_20MAY24_Cor.csv", header = TRUE, stringsAsFactors = FALSE)
+
+#Non breeding season
+atroxNB <- subset(atrox, Season == "NonBreed")
+atroxNB %>% group_by(Individual_ID, Visual_confirmation) %>% tally()
+atroxNB %>% group_by(Individual_ID) %>% tally()
+
+#Breeding season
+
+atroxB <- subset(atrox, Season == "Breed")
+atroxB %>% group_by(Individual_ID, Visual_confirmation) %>% tally()
+atroxB %>% group_by(Individual_ID) %>% tally()
+
+##################################################################################################################
+#Calculating the average vegetation percentage per seasons
+
+#Non breeding
+atroxNB %>%
+  group_by(Individual_ID) %>%
+  summarise_at(vars(Vegetation_per), funs(mean(., na.rm=TRUE)))
+
+#Breeding
+atroxB %>%
+  group_by(Individual_ID) %>%
+  summarise_at(vars(Vegetation_per), funs(mean(., na.rm=TRUE)))
+
+##################################################################################################################
+#Calculating the average soil percentage per seasons
+
+#Non breeding
+atroxNB %>%
+  group_by(Individual_ID) %>%
+  summarise_at(vars(Soil_per), funs(mean(., na.rm=TRUE)))
+
+#Breeding
+atroxB %>%
+  group_by(Individual_ID) %>%
+  summarise_at(vars(Vegetation_per), funs(mean(., na.rm=TRUE)))
+
+```
+
+
+```{r}
+#Testing the repeatability of personality with rptR: INCOMPLETE DATA MISSING
+perso <- read.csv("PersonalityResults_CA52-72_20MAY24_BIM.csv")
+
+##################################################################################################################
+#For Aggression 1: distribution changed to bimodal (0 = no bite; 1 = bite)
+Agg1 <- subset(perso, perso$Trial == "Agg1")
+
+#Doing the model with a bimodal distribution
+Agg1_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = Agg1, datatype = "Binary", nboot = 1000, 
+    npermut = 0)
+print(Agg1B_rpt)
+#Error: response is constant
+
+##################################################################################################################
+#For Aggression 2:
+agg2 <- subset(perso, perso$Trial == "Agg2")
+
+#Checking the distribution = Normal distribution = Gaussian
+ggplot(agg2, aes(x=agg2$Result)) + geom_density()
+Agg2N <- lmer(Result ~ Repetition + (1 | Individual),data = agg2)
+shapiro.test(residuals(Agg2N))
+
+#Doing the model
+Agg2_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = agg2, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+print(Agg2_rpt)
+
+##################################################################################################################
+#For boldness_head out
+bold <- subset(perso, perso$Trial == "Bold ")
+boldh <- subset(bold, bold$Result_type == "seconds_headOUT")
+
+#Checking the distribution = Normal or gaussian distribution
+BoldHL <- lmer(Result ~ Repetition + (1 | Individual),data = boldh)
+shapiro.test(residuals(BoldHL))
+
+#Doing the model
+BoldH1_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = boldh, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+print(BoldH1_rpt)
+
+##################################################################################################################
+#For boldness_body out
+boldb <- subset(bold, bold$Result_type == "seconds_bodyOUT")
+
+#Checking the distribution = Normal or gaussian distribution
+BoldBL <- lmer(Result ~ Repetition + (1 | Individual),data = boldb)
+shapiro.test(residuals(BoldBL))
+
+#Doing the model
+BoldB1_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = boldb, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+print(BoldB1_rpt)
+
+##################################################################################################################
+#For Exploration 1_ Latency to move
+
+exp1 <- subset(perso, perso$Trial == "Explo1")
+exp1L <- subset(exp1, exp1$Result_type == "seconds_LatencyMovement")
+
+#Checking the distribution = Normal or gaussian distribution
+exp1LL <- lmer(Result ~ Repetition + (1 | Individual),data = exp1L)
+shapiro.test(residuals(exp1LL))
+
+#Doing the model
+exp1L_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = exp1L, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+print(exp1L_rpt)
+
+##################################################################################################################
+#For Exploration 1_ Arena
+
+exp1A <- subset(exp1, exp1$Result_type == "seconds_arena")
+
+#Checking the distribution = not normal, needs to be log transformed
+exp1AL <- lmer(Result ~ Repetition + (1 | Individual),data = exp1A)
+shapiro.test(residuals(exp1AL))
+
+#Log transformed: follows gaussian distribution now
+exp1log <- read.csv("exp1A_log.csv")
+exp1ALB <- lmer(ResultB ~ Repetition + (1 | Individual),data = exp1log)
+shapiro.test(residuals(exp1ALB))
+
+#Doing the model
+exp1A_rpt <- rpt(ResultB ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = exp1log, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+print(exp1A_rpt)
+
+##################################################################################################################
+#For Sociality 2 
+
+soc2 <- subset(perso, perso$Trial == "Soc2")
+
+#Checking the distribution: Distribution is not normal, switched to binary data (0 = no touch, 1 = touch)
+Soc2B <- read.csv('soc2_bim.csv')
+
+#Doing the model with binary data 
+Soc2_rpt <- rpt(ResultB ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = Soc2B, datatype = "Binary", nboot = 1000, 
+    npermut = 0)
+print(Soc2_rpt)
+
+##################################################################################################################
+#For Activity
+
+Act <- subset(perso, perso$Trial == "Act")
+
+#Checking the distribution: Distribution is normal
+ActL <- lmer(Result ~ Repetition + (1 | Individual),data = Act)
+shapiro.test(residuals(ActL))
+
+#Doing the model with binary data 
+Act_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = Act, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+
+print(Act_rpt)
+
+##################################################################################################################
+#For Explo2: tongue flicks
+
+Explo2 <- subset(perso, perso$Trial == "Explo2")
+Explo2tf <- subset(perso, perso$Result_type == "tong_flicks")
+
+#Checking the distribution: Distribution is normal
+Explo2tfL <- lmer(Result ~ Repetition + (1 | Individual),data = Explo2tf)
+shapiro.test(residuals(Explo2tfL))
+
+#Doing the model with binary data 
+Explo2tf_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = Explo2tf, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+
+print(Explo2tf_rpt)
+
+##################################################################################################################
+#For Explo2: squares
+
+Explo2s <- subset(perso, perso$Result_type == "squares")
+
+#Checking the distribution: Distribution is normal
+Explo2sL <- lmer(Result ~ Repetition + (1 | Individual),data = Explo2s)
+shapiro.test(residuals(Explo2sL))
+
+#Doing the model with binary data 
+Explo2s_rpt <- rpt(Result ~ Repetition + (1 | Individual), grname = "Individual", 
+    data = Explo2s, datatype = "Gaussian", nboot = 1000, 
+    npermut = 0)
+
+print(Explo2s_rpt)
+
+```
+
+```{r}
+#Relationship between spatial ecology and personality
+
+#Loading the data
+SpPerso <- read.csv("Ch2_Spatial-Perso_23MAY24.csv")
+
+#Scaling the data so it is better for the lmer
+scaled <- transform(SpPerso,
+    Kernel95S = scale(Kernel95),
+    MCP95S = scale(MCP95),
+    Kernel50S = scale(Kernel50),
+    Kernel95NBS = scale(Kernel95_NB),
+    MCP95NBS = scale(MCP95_NB),
+    Kernel50NBS = scale(Kernel50_NB),
+    Kernel95BS = scale(Kernel95_B),
+    MCP95BS = scale(MCP95_B),
+    Kernel50BS = scale(Kernel50_B),
+    MovRateS = scale(MovRate),
+    MovRateNBS = scale(MovRateNB),
+    MovRateBS = scale(MovRateB),
+    VisualS = scale(Visual),
+    Exp1L_ABS = scale(Exp1L_AB),
+    BoldH_ABS = scale(BoldH_AB),
+    Agg2_ABS = scale(Agg2_AB),
+    Act_ABS = scale(Act_AB),
+    Explo2_TF_ABS = scale(Explo2_TF_AB),
+    Explo2_S_ABS = scale(Explo2_S_AB))
+```
+
+```{r}
+##################################################################################################################
+#Home range (MCP 95): Breeding season. LM has a better AIC than LMER.
+
+#For Explo2 TF
+MCP1 <- lm(MCP95_B ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(MCP1))
+summary(MCP1)
+
+#For Explo2 S
+MCP2 <- lm(MCP95_B ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(MCP2))
+summary(MCP2)
+
+#For boldness body out
+MCP3 <- lm(MCP95_B ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(MCP3))
+summary(MCP3)
+
+#For activity
+MCP4 <- lm(MCP95_B ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(MCP4))
+summary(MCP4)
+
+#For reactivity: to reach normality, Agg2 was logtransformed
+MCP5 <- lm(MCP95_B ~ Sex + log(Agg2_AB), data = SpPerso)
+
+shapiro.test(residuals(MCP5))
+summary(MCP5)
+```
+
+```{r}
+##################################################################################################################
+#Home range (MCP 95): Non Breeding season. LM has a better AIC than LMER.
+
+#For Explo2 TF
+MCP1 <- lm(log(MCP95_NB) ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(MCP1))
+summary(MCP1)
+
+#For Explo2 S
+MCP2 <- lm(log(MCP95_NB) ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(MCP2))
+summary(MCP2)
+
+#For boldness body out
+MCP3 <- lm(log(MCP95_NB) ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(MCP3))
+summary(MCP3)
+
+#For activity
+MCP4 <- lm(log(MCP95_NB) ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(MCP4))
+summary(MCP4)
+
+#For reactivity: to reach normality, Agg2 was logtransformed
+MCP5 <- lm(MCP95_NB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(MCP5))
+summary(MCP5)
+```
+
+```{r}
+##################################################################################################################
+#Home range (Kernel 95): Breeding season. LMer has a better AIC than LM: yield same results though
+
+#For Explo2 TF
+K1 <- lm(Kernel95_B ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(K1))
+summary(K1)
+
+#For Explo2 S
+K2 <- lm(Kernel95_B ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(K2))
+summary(K2)
+
+#For boldness body out
+K3 <- lm(log(Kernel95_BS) ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(K3))
+summary(K3)
+
+#For activity
+K4 <- lm(log(Kernel95_B) ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(K4))
+summary(K4)
+
+#For reactivity: to reach normality, Agg2 was logtransformed
+K5 <- lm(Kernel95_B ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(K5))
+summary(K5)
+
+```
+
+```{r}
+##################################################################################################################
+#Home range (Kernel 95): Non Breeding season. 
+
+#For Explo2 TF
+K1 <- lm(Kernel95_NB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(K1))
+summary(K1)
+
+#For Explo2 S
+K2 <- lm(Kernel95_NB ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(K2))
+summary(K2)
+
+#For boldness body out: Significant when looking at bold B: Bolder have bigger home range
+K3 <- lm(log(Kernel95_NB) ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(K3))
+summary(K3)
+
+#For activity
+K4 <- lm(log(Kernel95_NB) ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(K4))
+summary(K4)
+
+#For reactivity: to reach normality, Agg2 was logtransformed
+K5 <- lm(Kernel95_NB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(K5))
+summary(K5)
+```
+
+```{r}
+##################################################################################################################
+#Core area(Kernel 50): Breeding season. LM better AIC than LMER
+
+#For Explo2 TF
+K1 <- lm(Kernel50_B ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(K1))
+summary(K1)
+
+#For Explo2 S
+K2 <- lm(Kernel50_B ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(K2))
+summary(K2)
+
+#For boldness body out:
+K3 <- lm(Kernel50_B ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(K3))
+summary(K3)
+
+#For activity
+K4 <- lm(Kernel50_B ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(K4))
+summary(K4)
+
+#For reactivity: to reach normality, Agg2 was logtransformed
+K5 <- lm(Kernel50_B ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(K5))
+summary(K5)
+```
+
+```{r}
+##################################################################################################################
+#Core area(Kernel 50): Non Breeding season. LM better AIC than LMER
+
+#For Explo2 TF
+K1 <- lm(Kernel50_NB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(K1))
+summary(K1)
+
+#For Explo2 S
+K2 <- lm(Kernel50_NB ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(K2))
+summary(K2)
+
+#For boldness body out: almost significant, smaller core use area for shy individuals
+K3 <- lm(Kernel50_NB ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(K3))
+summary(K3)
+
+#For activity
+K4 <- lm(Kernel50_NB ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(K4))
+summary(K4)
+
+#For reactivity: almost significant, significant with B, rattle more = smaller core use area
+K5 <- lm(Kernel50_NB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(K5))
+summary(K5)
+```
+
+```{r}
+##################################################################################################################
+#Movement rate: Breeding season. LM and LMER same AIC
+
+#For Explo2 TF
+M1 <- lm(MovRateB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(MovRateB ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(MovRateB ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#Difference between females and males
+fem <- subset(SpPerso, Sex == "F")
+mal <- subset(SpPerso, Sex == "M")
+
+MF <- lm(MovRateNB ~ BoldB_AB, data = fem)
+summary(MF)
+MM <- lm(MovRateNB ~ BoldB_AB, data = mal)
+summary(MM)
+
+#For activity
+M4 <- lm(MovRateB ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(MovRateB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Movement rate: Non Breeding season.LM better AIC than LMER
+
+#For Explo2 TF
+M1 <- lm(log(MovRateNB) ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(MovRateNB ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out: significant effect, bolder move more
+M3 <- lm(MovRateNB ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity: almost significant: More active move more
+M4 <- lm(log(MovRateNB) ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(MovRateNB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Total distance: Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(TD_B ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(TD_B  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(TD_B  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(TD_B  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#Difference between females and males
+fem <- subset(SpPerso, Sex == "F")
+mal <- subset(SpPerso, Sex == "M")
+
+MF <- lm(TD_B ~ Act_AB, data = fem)
+summary(MF)
+MM <- lm(TD_B ~ Act_AB, data = mal)
+summary(MM)
+
+#For reactivity: 
+M5 <- lm(TD_B  ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Total distance: Non  Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(TD_NB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(TD_NB  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(TD_NB  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(TD_NB  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(TD_NB  ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Vegetation average: Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(VegB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(VegB  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(VegB  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(VegB  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(VegB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Vegetation average: Non-Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(VegNB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(VegNB  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(VegNB  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(VegNB  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(log(VegNB) ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Percentage outside: Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(VisualB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(VisualB  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(VisualB  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(VisualB  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(VisualB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Percentage outside: Non Breeding season. 
+
+#For Explo2 TF
+M1 <- lm(VisualNB ~ Sex + Explo2_TF_AB, data = SpPerso)
+shapiro.test(residuals(M1))
+summary(M1)
+
+#For Explo2 S
+M2 <- lm(VisualNB  ~ Sex + Explo2_S_AB, data = SpPerso)
+shapiro.test(residuals(M2))
+summary(M2)
+
+#For boldness body out:
+M3 <- lm(VisualNB  ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(M3))
+summary(M3)
+
+#For activity
+M4 <- lm(VisualNB  ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(M4))
+summary(M4)
+
+#For reactivity: 
+M5 <- lm(VisualNB ~ Sex + Agg2_AB, data = SpPerso)
+shapiro.test(residuals(M5))
+summary(M5)
+```
+
+```{r}
+##################################################################################################################
+#Looking at difference non breeding/breeding for pace-of-life hypothesis
+
+#For boldness and difference in movement rate
+MCP1 <- lm(DiffMR ~ Sex + BoldB_AB, data = SpPerso)
+shapiro.test(residuals(MCP1))
+summary(MCP1)
+
+#Graphical representation
+ggplot(SpPerso, aes(BoldH_AB, DiffMR)) +
+  geom_point() +
+  geom_smooth(method='lm') +
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~~~~"))) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(size = 15)) 
+
+ggsave("DiffMov_Bold.pdf", width = 6, height = 4)
+
+#For activity and difference in TDT
+MCP2 <- lm(DiffTD ~ Sex + Act_AB, data = SpPerso)
+shapiro.test(residuals(MCP2))
+summary(MCP2)
+
+```
+
+
+
+
+```{r}
+#Graphical representation of significant relationship
+
+SpPerso <- read.csv("Ch2_Spatial-Perso_23MAY24.csv")
+
+#For boldness and movemement rate
+
+ggplot(SpPerso, aes(BoldB_AB, MovRateNB, color = Sex)) +
+  geom_point() +
+  geom_smooth(method='lm') +
+  stat_regline_equation(aes(label = paste(..adj.rr.label.., sep = "~~~~"))) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(size = 15)) 
+
+ggsave("Bold_Body_MR.pdf", width = 6, height = 4)
+
+ggplot(SpPerso, aes(BoldH_AB, MovRateNB)) +
+  geom_point() +
+  geom_smooth(method='lm') +
+  stat_regline_equation(label.y = 40, aes(label = ..rr.label..)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(size = 15))
+
+#################################################################################################################
+#For activity and total distance travelled
+
+ggplot(SpPerso, aes(Act_AB,TD_NB)) +
+  geom_point() +
+  geom_smooth(method='lm') +
+  stat_regline_equation(label.y = 40, aes(label = ..rr.label..)) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(size = 15))
+
+ggplot(SpPerso, aes(Act_AB, TD_B, color = Sex)) +
+  geom_point() +
+  geom_smooth(method='lm') +
+  stat_regline_equation(aes(label =  paste(..adj.rr.label.., sep = "~~~~"))) + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        text = element_text(size = 15))
+ggsave("ActTD.pdf")
+
+##################################################################################################################
+#Difference in movement rate between males and females between seasons
+
+MoV <- read.csv("MovRate_Season.csv")
+
+#Graph
+ggplot(MoV, aes(x=Season, y=MovRate, fill=Sex, color= Sex, alpha =0.1, )) +  
+  geom_boxplot(lwd=1) + 
+  scale_fill_manual (values=c("rosybrown4", "peachpuff3")) +
+  scale_color_manual(values=c("rosybrown4", "peachpuff3")) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+  panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+ggsave("MovRate_Season.pdf")
+
+#Looking at difference between groups
+B <- subset(MoV, Season == "Mating")
+NB <- subset(MoV, Season == "Non-mating")
+M <- subset(MoV, Sex == "M")
+F <- subset(MoV, Sex == "F")
+
+wilcox.test(B$MovRate ~ B$Sex)
+wilcox.test(NB$MovRate ~ NB$Sex)
+wilcox.test(M$MovRate ~ M$Season)
+wilcox.test(F$MovRate ~ F$Season)
+
+##################################################################################################################
+#Difference in total distance travelled between males and females between seasons
+
+TDT <- read.csv("TDT_Season.csv")
+
+#Graph
+ggplot(TDT, aes(x=Season, y=TDT, fill=Sex, color= Sex, alpha =0.1, )) +  
+  geom_boxplot(lwd=1) + 
+  scale_fill_manual (values=c("rosybrown4", "peachpuff3")) +
+  scale_color_manual(values=c("rosybrown4", "peachpuff3")) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+  panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+ggsave("TDT_Season.pdf")
+
+#Looking at difference between groups
+B <- subset(TDT, Season == "Mating")
+NB <- subset(TDT, Season == "Non-mating")
+M <- subset(TDT, Sex == "M")
+F <- subset(TDT, Sex == "F")
+
+wilcox.test(B$TDT ~ B$Sex)
+wilcox.test(NB$TDT ~ NB$Sex)
+wilcox.test(M$TDT~ M$Season)
+wilcox.test(F$TDT ~ F$Season)
+
+wilcox.test(TDT$TDT ~ TDT$Season)
+
+```
+
+
+
+
+
+
+
+
+

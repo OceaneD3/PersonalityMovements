@@ -1,0 +1,281 @@
+Individual,Trial,Repetition,Result_type,Result
+CA52,Act,A,seconds_moving,9494
+CA52,Act,B,seconds_moving,12658
+CA53,Act,A,seconds_moving,3213
+CA53,Act,B,seconds_moving,1082
+CA54,Act,A,seconds_moving,7045
+CA54,Act,B,seconds_moving,12018
+CA56,Act,A,seconds_moving,506
+CA56,Act,B,seconds_moving,357
+CA57,Act,A,seconds_moving,1947
+CA57,Act,B,seconds_moving,4633
+CA58,Act,A,seconds_moving,5658
+CA58,Act,B,seconds_moving,4326
+CA59,Act,A,seconds_moving,3850
+CA59,Act,B,seconds_moving,5443
+CA62,Act,A,seconds_moving,7897
+CA62,Act,B,seconds_moving,8608
+CA65,Act,A,seconds_moving,9611
+CA65,Act,B,seconds_moving,10786
+CA66,Act,A,seconds_moving,8088
+CA66,Act,B,seconds_moving,8030
+CA68,Act,A,seconds_moving,2711
+CA68,Act,B,seconds_moving,2932
+CA70,Act,A,seconds_moving,1460
+CA70,Act,B,seconds_moving,324
+CA71,Act,A,seconds_moving,4515
+CA71,Act,B,seconds_moving,3531
+CA72,Act,A,seconds_moving,5699
+CA72,Act,B,seconds_moving,2388
+CA52,Agg1,A,score_behavior,1
+CA52,Agg1,B,score_behavior,1
+CA53,Agg1,A,score_behavior,1
+CA53,Agg1,B,score_behavior,1
+CA54,Agg1,A,score_behavior,1
+CA54,Agg1,B,score_behavior,1
+CA56,Agg1,A,score_behavior,1
+CA56,Agg1,B,score_behavior,1
+CA57,Agg1,A,score_behavior,1
+CA57,Agg1,B,score_behavior,1
+CA58,Agg1,A,score_behavior,1
+CA58,Agg1,B,score_behavior,1
+CA59,Agg1,A,score_behavior,1
+CA59,Agg1,B,score_behavior,0
+CA62,Agg1,A,score_behavior,1
+CA62,Agg1,B,score_behavior,1
+CA65,Agg1,A,score_behavior,0
+CA65,Agg1,B,score_behavior,0
+CA66,Agg1,A,score_behavior,1
+CA66,Agg1,B,score_behavior,1
+CA68,Agg1,A,score_behavior,1
+CA68,Agg1,B,score_behavior,1
+CA70,Agg1,A,score_behavior,1
+CA70,Agg1,B,score_behavior,1
+CA71,Agg1,A,score_behavior,1
+CA71,Agg1,B,score_behavior,1
+CA72,Agg1,A,score_behavior,0
+CA72,Agg1,B,score_behavior,1
+CA52,Agg2,A,seconds_rattling,1
+CA52,Agg2,B,seconds_rattling,90
+CA53,Agg2,A,seconds_rattling,4
+CA53,Agg2,B,seconds_rattling,15
+CA54,Agg2,A,seconds_rattling,6
+CA54,Agg2,B,seconds_rattling,31
+CA56,Agg2,A,seconds_rattling,60
+CA56,Agg2,B,seconds_rattling,110
+CA57,Agg2,A,seconds_rattling,286
+CA57,Agg2,B,seconds_rattling,244
+CA58,Agg2,A,seconds_rattling,155
+CA58,Agg2,B,seconds_rattling,72
+CA59,Agg2,A,seconds_rattling,50
+CA59,Agg2,B,seconds_rattling,119
+CA62,Agg2,A,seconds_rattling,32
+CA62,Agg2,B,seconds_rattling,68
+CA65,Agg2,A,seconds_rattling,207
+CA65,Agg2,B,seconds_rattling,171
+CA66,Agg2,A,seconds_rattling,139
+CA66,Agg2,B,seconds_rattling,134
+CA68,Agg2,A,seconds_rattling,150
+CA68,Agg2,B,seconds_rattling,154
+CA70,Agg2,A,seconds_rattling,13
+CA70,Agg2,B,seconds_rattling,13
+CA71,Agg2,A,seconds_rattling,57
+CA71,Agg2,B,seconds_rattling,120
+CA72,Agg2,A,seconds_rattling,3
+CA72,Agg2,B,seconds_rattling,4
+CA52,Bold ,A,seconds_bodyOUT,2330
+CA52,Bold ,A,seconds_headOUT,1737
+CA52,Bold ,B,seconds_bodyOUT,4479
+CA52,Bold ,B,seconds_headOUT,957
+CA53,Bold ,A,seconds_bodyOUT,2511
+CA53,Bold ,A,seconds_headOUT,1842
+CA53,Bold ,B,seconds_bodyOUT,7200
+CA53,Bold ,B,seconds_headOUT,4756
+CA54,Bold ,A,seconds_bodyOUT,5522
+CA54,Bold ,A,seconds_headOUT,4683
+CA54,Bold ,B,seconds_bodyOUT,2991
+CA54,Bold ,B,seconds_headOUT,2606
+CA56,Bold ,A,seconds_bodyOUT,7200
+CA56,Bold ,A,seconds_headOUT,7200
+CA56,Bold ,B,seconds_bodyOUT,7200
+CA56,Bold ,B,seconds_headOUT,7200
+CA57,Bold ,A,seconds_bodyOUT,2681
+CA57,Bold ,A,seconds_headOUT,1727
+CA57,Bold ,B,seconds_bodyOUT,4330
+CA57,Bold ,B,seconds_headOUT,3306
+CA58,Bold ,A,seconds_bodyOUT,5569
+CA58,Bold ,A,seconds_headOUT,4873
+CA58,Bold ,B,seconds_bodyOUT,2904
+CA58,Bold ,B,seconds_headOUT,2825
+CA59,Bold ,A,seconds_bodyOUT,1839
+CA59,Bold ,A,seconds_headOUT,1427
+CA59,Bold ,B,seconds_bodyOUT,2297
+CA59,Bold ,B,seconds_headOUT,191
+CA62,Bold ,A,seconds_bodyOUT,5641
+CA62,Bold ,A,seconds_headOUT,3930
+CA62,Bold ,B,seconds_bodyOUT,5169
+CA62,Bold ,B,seconds_headOUT,4604
+CA65,Bold ,A,seconds_bodyOUT,5690
+CA65,Bold ,A,seconds_headOUT,4871
+CA65,Bold ,B,seconds_bodyOUT,3374
+CA65,Bold ,B,seconds_headOUT,2280
+CA66,Bold ,A,seconds_bodyOUT,5982
+CA66,Bold ,A,seconds_headOUT,1924
+CA66,Bold ,B,seconds_bodyOUT,6009
+CA66,Bold ,B,seconds_headOUT,4070
+CA68,Bold ,A,seconds_bodyOUT,7200
+CA68,Bold ,A,seconds_headOUT,6546
+CA68,Bold ,B,seconds_bodyOUT,7200
+CA68,Bold ,B,seconds_headOUT,7200
+CA70,Bold ,A,seconds_bodyOUT,7200
+CA70,Bold ,A,seconds_headOUT,5834
+CA70,Bold ,B,seconds_bodyOUT,7200
+CA70,Bold ,B,seconds_headOUT,5981
+CA71,Bold ,A,seconds_bodyOUT,4852
+CA71,Bold ,A,seconds_headOUT,4295
+CA71,Bold ,B,seconds_bodyOUT,7200
+CA71,Bold ,B,seconds_headOUT,3662
+CA72,Bold ,A,seconds_bodyOUT,307
+CA72,Bold ,A,seconds_headOUT,246
+CA72,Bold ,B,seconds_bodyOUT,385
+CA72,Bold ,B,seconds_headOUT,242
+CA52,Explo1,A,seconds_arena,917
+CA52,Explo1,A,seconds_LatencyMovement,841
+CA52,Explo1,B,seconds_arena,1551
+CA52,Explo1,B,seconds_LatencyMovement,1326
+CA53,Explo1,A,seconds_arena,1136
+CA53,Explo1,A,seconds_LatencyMovement,1072
+CA53,Explo1,B,seconds_arena,2760
+CA53,Explo1,B,seconds_LatencyMovement,1136
+CA54,Explo1,A,seconds_arena,3205
+CA54,Explo1,A,seconds_LatencyMovement,1814
+CA54,Explo1,B,seconds_arena,1904
+CA54,Explo1,B,seconds_LatencyMovement,1741
+CA56,Explo1,A,seconds_arena,3600
+CA56,Explo1,A,seconds_LatencyMovement,3600
+CA56,Explo1,B,seconds_arena,3600
+CA56,Explo1,B,seconds_LatencyMovement,3600
+CA57,Explo1,A,seconds_arena,2609
+CA57,Explo1,A,seconds_LatencyMovement,2376
+CA57,Explo1,B,seconds_arena,3600
+CA57,Explo1,B,seconds_LatencyMovement,3600
+CA58,Explo1,A,seconds_arena,3600
+CA58,Explo1,A,seconds_LatencyMovement,3600
+CA58,Explo1,B,seconds_arena,3600
+CA58,Explo1,B,seconds_LatencyMovement,1951
+CA59,Explo1,A,seconds_arena,2275
+CA59,Explo1,A,seconds_LatencyMovement,2146
+CA59,Explo1,B,seconds_arena,1069
+CA59,Explo1,B,seconds_LatencyMovement,914
+CA62,Explo1,A,seconds_arena,1275
+CA62,Explo1,A,seconds_LatencyMovement,1172
+CA62,Explo1,B,seconds_arena,396
+CA62,Explo1,B,seconds_LatencyMovement,180
+CA65,Explo1,A,seconds_arena,1708
+CA65,Explo1,A,seconds_LatencyMovement,1327
+CA65,Explo1,B,seconds_arena,1295
+CA65,Explo1,B,seconds_LatencyMovement,1335
+CA66,Explo1,A,seconds_arena,635
+CA66,Explo1,A,seconds_LatencyMovement,481
+CA66,Explo1,B,seconds_arena,2554
+CA66,Explo1,B,seconds_LatencyMovement,1978
+CA68,Explo1,A,seconds_arena,1610
+CA68,Explo1,A,seconds_LatencyMovement,1517
+CA68,Explo1,B,seconds_arena,3403
+CA68,Explo1,B,seconds_LatencyMovement,3225
+CA70,Explo1,A,seconds_arena,2914
+CA70,Explo1,A,seconds_LatencyMovement,2714
+CA70,Explo1,B,seconds_arena,3600
+CA70,Explo1,B,seconds_LatencyMovement,3600
+CA71,Explo1,A,seconds_arena,993
+CA71,Explo1,A,seconds_LatencyMovement,912
+CA71,Explo1,B,seconds_arena,2465
+CA71,Explo1,B,seconds_LatencyMovement,2375
+CA72,Explo1,A,seconds_arena,146
+CA72,Explo1,A,seconds_LatencyMovement,97
+CA72,Explo1,B,seconds_arena,95
+CA72,Explo1,B,seconds_LatencyMovement,59
+CA52,Explo2,A,squares,91
+CA52,Explo2,A,tong_flicks,776
+CA52,Explo2,B,squares,54
+CA52,Explo2,B,tong_flicks,711
+CA53,Explo2,A,squares,133
+CA53,Explo2,A,tong_flicks,1713
+CA53,Explo2,B,squares,98
+CA53,Explo2,B,tong_flicks,1247
+CA54,Explo2,A,squares,67
+CA54,Explo2,A,tong_flicks,814
+CA54,Explo2,B,squares,67
+CA54,Explo2,B,tong_flicks,903
+CA56,Explo2,A,squares,0
+CA56,Explo2,A,tong_flicks,303
+CA56,Explo2,B,squares,0
+CA56,Explo2,B,tong_flicks,171
+CA57,Explo2,A,squares,45
+CA57,Explo2,A,tong_flicks,574
+CA57,Explo2,B,squares,29
+CA57,Explo2,B,tong_flicks,518
+CA58,Explo2,A,squares,39
+CA58,Explo2,A,tong_flicks,811
+CA58,Explo2,B,squares,46
+CA58,Explo2,B,tong_flicks,695
+CA59,Explo2,A,squares,166
+CA59,Explo2,A,tong_flicks,1961
+CA59,Explo2,B,squares,140
+CA59,Explo2,B,tong_flicks,1565
+CA62,Explo2,A,squares,59
+CA62,Explo2,A,tong_flicks,1408
+CA62,Explo2,B,squares,62
+CA62,Explo2,B,tong_flicks,1259
+CA65,Explo2,A,squares,72
+CA65,Explo2,A,tong_flicks,729
+CA65,Explo2,B,squares,143
+CA65,Explo2,B,tong_flicks,1063
+CA66,Explo2,A,squares,238
+CA66,Explo2,A,tong_flicks,1981
+CA66,Explo2,B,squares,176
+CA66,Explo2,B,tong_flicks,1515
+CA68,Explo2,A,squares,46
+CA68,Explo2,A,tong_flicks,592
+CA68,Explo2,B,squares,45
+CA68,Explo2,B,tong_flicks,629
+CA70,Explo2,A,squares,44
+CA70,Explo2,A,tong_flicks,804
+CA70,Explo2,B,squares,
+CA70,Explo2,B,tong_flicks,
+CA71,Explo2,A,squares,173
+CA71,Explo2,A,tong_flicks,1640
+CA71,Explo2,B,squares,100
+CA71,Explo2,B,tong_flicks,936
+CA72,Explo2,A,squares,199
+CA72,Explo2,A,tong_flicks,1754
+CA72,Explo2,B,squares,181
+CA72,Explo2,B,tong_flicks,1403
+CA52,Soc2,A,centimeters,0
+CA52,Soc2,B,centimeters,0
+CA53,Soc2,A,centimeters,134
+CA53,Soc2,B,centimeters,0
+CA54,Soc2,A,centimeters,0
+CA54,Soc2,B,centimeters,53
+CA56,Soc2,A,centimeters,143
+CA56,Soc2,B,centimeters,0
+CA57,Soc2,A,centimeters,0
+CA57,Soc2,B,centimeters,0
+CA58,Soc2,A,centimeters,125
+CA58,Soc2,B,centimeters,0
+CA59,Soc2,A,centimeters,0
+CA59,Soc2,B,centimeters,0
+CA62,Soc2,A,centimeters,0
+CA62,Soc2,B,centimeters,0
+CA65,Soc2,A,centimeters,66
+CA65,Soc2,B,centimeters,3
+CA66,Soc2,A,centimeters,86
+CA66,Soc2,B,centimeters,0
+CA68,Soc2,A,centimeters,119
+CA68,Soc2,B,centimeters,125
+CA70,Soc2,A,centimeters,17
+CA70,Soc2,B,centimeters,136
+CA71,Soc2,A,centimeters,0
+CA71,Soc2,B,centimeters,0
+CA72,Soc2,A,centimeters,0
+CA72,Soc2,B,centimeters,0
